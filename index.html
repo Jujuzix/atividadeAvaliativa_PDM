@@ -1,13 +1,66 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Trabalho final</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="apple-touch-icon" href="img/pwa-iicon-256.png" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="favicon.ico" />
+    <meta name="theme-color" content="white" />
   </head>
+
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <section class="container">
+      <header class="cabecalho">
+        <h1 class="titulo">PWA - Geolocation</h1>
+      </header>
+
+      <div class="mapouter">
+        <div class="gmap_canvas">
+          <iframe
+            width="600"
+            height="500"
+            id="gmap_canvas"
+            src="https://maps.google.com/maps?q=2880%20Broadway,%20New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            frameborder="0"
+            scrolling="no"
+            marginheight="0"
+            marginwidth="0"
+          ></iframe
+          ><a href="https://123movies-i.net">123movies</a><br /><style>
+            .mapouter {
+              position: relative;
+              text-align: right;
+              height: 500px;
+              width: 600px;
+            }</style
+          ><a href="https://www.embedgooglemap.net"></a
+          ><style>
+            .gmap_canvas {
+              overflow: hidden;
+              background: none !important;
+              height: 500px;
+              width: 600px;
+            }
+          </style>
+        </div>
+      </div>
+      <div class="conteudo">
+        <header class="cabecalhoConteudo">
+          <h2>Geolocalização</h2>
+        </header>
+        <div class="conteudoLocalizacao">
+          <p>Latitude: <span id="latitude">0.0</span></p>
+          <p>Logitude: <span id="longitude">0.0</span></p>
+          <div>
+            <button class="botao" id="localizacao">Capturar Localizacao</button>
+          </div>
+        </div>
+      </div>
+      <footer class="rodape">Progressive Web Application - Geolocation</footer>
+    </section>
+    <script src="js/main.js"></script>
   </body>
 </html>
