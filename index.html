@@ -7,60 +7,30 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="apple-touch-icon" href="img/pwa-iicon-256.png" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="icon" href="favicon.ico" />
     <meta name="theme-color" content="white" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+   
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+    </style>
+  
   </head>
 
   <body>
-    <section class="container">
-      <header class="cabecalho">
-        <h1 class="titulo">PWA - Geolocation</h1>
-      </header>
+    <h1>Geolocalização de Restaurantes</h1>
+    <div id="map"></div>
+    <p>Latitude: <span id="latitude">0.0</span> | Longitude: <span id="longitude">0.0</span></p>
+    
+    <input type="text" id="nomeRestaurante" placeholder="Nome do restaurante" />
+    <button id="salvarRestaurante">Salvar</button>
+    
+    <ul id="listaRestaurantes"></ul>
 
-      <div class="mapouter">
-        <div class="gmap_canvas">
-          <iframe
-            width="600"
-            height="500"
-            id="gmap_canvas"
-            src="https://maps.google.com/maps?q=2880%20Broadway,%20New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed"
-            frameborder="0"
-            scrolling="no"
-            marginheight="0"
-            marginwidth="0"
-          ></iframe
-          ><a href="https://123movies-i.net">123movies</a><br /><style>
-            .mapouter {
-              position: relative;
-              text-align: right;
-              height: 500px;
-              width: 600px;
-            }</style
-          ><a href="https://www.embedgooglemap.net"></a
-          ><style>
-            .gmap_canvas {
-              overflow: hidden;
-              background: none !important;
-              height: 500px;
-              width: 600px;
-            }
-          </style>
-        </div>
-      </div>
-      <div class="conteudo">
-        <header class="cabecalhoConteudo">
-          <h2>Geolocalização</h2>
-        </header>
-        <div class="conteudoLocalizacao">
-          <p>Latitude: <span id="latitude">0.0</span></p>
-          <p>Logitude: <span id="longitude">0.0</span></p>
-          <div>
-            <button class="botao" id="localizacao">Capturar Localizacao</button>
-          </div>
-        </div>
-      </div>
-      <footer class="rodape">Progressive Web Application - Geolocation</footer>
-    </section>
     <script src="js/main.js"></script>
+    <script type="module" src="js/db.js"></script>
   </body>
 </html>

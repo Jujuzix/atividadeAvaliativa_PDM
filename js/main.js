@@ -1,48 +1,66 @@
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      let reg;
-      reg = await navigator.serviceWorker.register("/sw.js", {
-        type: "module",
-      });
-      console.log("Service worker registrada", reg);
-    } catch (err) {
-      console.log("Service work registro falhou", err);
-    }
+import { initDB, addRestaurante, getRestaurantes } from './db.js';
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await initDB();
+
+  const map = L.map("map").setView([-23.5505, -46.6333], 13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(map);
+
+  let selectedLatLng = null;
+  const listaRestaurantes = document.getElementById("listaRestaurantes");
+
+  // Carrega os restaurantes do IndexedDB
+  const restaurantes = await getRestaurantes();
+  restaurantes.forEach(({ nome, lat, lng }) => {
+    adicionarRestauranteNaLista(nome, lat, lng);
+    adicionarMarcadorNoMapa(nome, lat, lng);
   });
-}
 
-let posicaoInicial;
-const capturarLocalizacao = document.getElementById("localizacao");
-const latitude = document.getElementById("latitude");
-const longitude = document.getElementById("longitude");
+  map.on("click", (e) => {
+    selectedLatLng = e.latlng;
+    document.getElementById("latitude").textContent = selectedLatLng.lat.toFixed(6);
+    document.getElementById("longitude").textContent = selectedLatLng.lng.toFixed(6);
+  });
 
-const sucesso = (posicao) => {
-  //callback de sucesso para captura da posicao
-  posicaoInicial = posicao;
-  latitude.innerHTML = posicaoInicial.coords.latitude;
-  Longitude.innerHTML = posicaoInicial.coords.longitude;
-};
+  document.getElementById("salvarRestaurante").addEventListener("click", async () => {
+    const nome = document.getElementById("nomeRestaurante").value.trim();
 
-const erro = (error) => {
-  //callback de error (falha para captura de localizacao)
-  let errorMessage;
-  switch (error.code) {
-    case 0:
-      errorMessage = "Erro desconhecido";
-      break;
-    case 1:
-      errorMessage = "Permissão negada! ";
-      break;
-    case 2:
-      errorMessage = "Captura de posição indisponível!";
-      break;
-    case 3:
-      errorMessage = "Tempo de solicitação excedido!";
-      break;
+    if (!nome || !selectedLatLng) {
+      alert("Selecione um local no mapa e insira um nome!");
+      return;
+    }
+
+    await addRestaurante({ nome, lat: selectedLatLng.lat, lng: selectedLatLng.lng });
+
+    adicionarRestauranteNaLista(nome, selectedLatLng.lat, selectedLatLng.lng);
+    adicionarMarcadorNoMapa(nome, selectedLatLng.lat, selectedLatLng.lng);
+
+    document.getElementById("nomeRestaurante").value = "";
+  });
+
+  function adicionarRestauranteNaLista(nome, lat, lng) {
+    const jaExiste = [...listaRestaurantes.children].some(li =>
+      li.textContent.includes(`${lat.toFixed(6)}, ${lng.toFixed(6)}`)
+    );
+
+    if (jaExiste) return;
+
+    const li = document.createElement("li");
+    li.textContent = `${nome} (${lat.toFixed(6)}, ${lng.toFixed(6)})`;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Ir";
+    btn.style.marginLeft = "10px";
+    btn.addEventListener("click", () => {
+      map.setView([lat, lng], 15);
+    });
+
+    li.appendChild(btn);
+    listaRestaurantes.appendChild(li);
   }
-  console.log("Ocorreu um erro: " + errorMessage);
-};
-capturarLocalizacao.addEventListener("click", () => {
-  navigator.geolocation.getCurrentPosition(sucesso, erro);
+
+  function adicionarMarcadorNoMapa(nome, lat, lng) {
+    const marker = L.marker([lat, lng]).addTo(map).bindPopup(nome);
+    marker.openPopup();
+  }
 });
